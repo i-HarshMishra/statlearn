@@ -1,0 +1,237 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  LEARNER
+  ADMIN
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  role         Role
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  employeeProfile EmployeeProfile?
+}
+
+model EmployeeProfile {
+  id                 String   @id @default(uuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id])
+
+  fullName           String
+  employeeCode       String?
+  designation        String
+  department         String
+  currentAssignment  String?
+  education          String?
+  experienceYears    Float    @default(0)
+  location           String?
+  preferredLanguage  String?  @default("English")
+  previousTrainings  String?
+  onboardingComplete Boolean  @default(false)
+  profileSummary     String?
+
+  overallReadiness   Float    @default(0)
+  totalLearningHours Float    @default(0)
+
+  skillRatings       SkillRating[]
+  competencyScores   CompetencyScore[]
+  skillGaps          SkillGap[]
+  courseProgress      CourseProgress[]
+  quizAttempts       QuizAttempt[]
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Competency {
+  id          String @id @default(uuid())
+  name        String @unique
+  domain      String
+  description String?
+
+  roleBenchmarks   RoleBenchmark[]
+  skillRatings     SkillRating[]
+  competencyScores CompetencyScore[]
+  skillGaps        SkillGap[]
+  courseMatches    CompetencyCourseMatch[]
+}
+
+model RoleBenchmark {
+  id            String     @id @default(uuid())
+  designation   String
+  competencyId  String
+  competency    Competency @relation(fields: [competencyId], references: [id])
+  requiredLevel Int
+
+  @@unique([designation, competencyId])
+}
+
+model SkillRating {
+  id           String          @id @default(uuid())
+  profileId    String
+  profile      EmployeeProfile @relation(fields: [profileId], references: [id])
+  competencyId String
+  competency   Competency      @relation(fields: [competencyId], references: [id])
+  rating       Int
+
+  @@unique([profileId, competencyId])
+}
+
+model CompetencyScore {
+  id              String          @id @default(uuid())
+  profileId       String
+  profile         EmployeeProfile @relation(fields: [profileId], references: [id])
+  competencyId    String
+  competency      Competency      @relation(fields: [competencyId], references: [id])
+  score           Float           @default(0)
+  currentLevel    Int             @default(1)
+  diagnosticScore Float?
+  selfScore       Float?
+  trainingScore   Float?
+  experienceScore Float?
+
+  @@unique([profileId, competencyId])
+}
+
+model SkillGap {
+  id            String          @id @default(uuid())
+  profileId     String
+  profile       EmployeeProfile @relation(fields: [profileId], references: [id])
+  competencyId  String
+  competency    Competency      @relation(fields: [competencyId], references: [id])
+  requiredLevel Int
+  currentLevel  Int
+  gap           Int
+  severity      String
+
+  @@unique([profileId, competencyId])
+}
+
+model Course {
+  id             String   @id @default(uuid())
+  title          String
+  provider       String
+  description    String?
+  level          String
+  durationHours  Float
+  language       String?  @default("English")
+  url            String?
+  competencyTags String
+
+  courseProgress CourseProgress[]
+  competencyMatches CompetencyCourseMatch[]
+}
+
+model CourseProgress {
+  id          String          @id @default(uuid())
+  profileId   String
+  profile     EmployeeProfile @relation(fields: [profileId], references: [id])
+  courseId     String
+  course      Course          @relation(fields: [courseId], references: [id])
+  status      String          @default("recommended")
+  completedAt DateTime?
+
+  @@unique([profileId, courseId])
+}
+
+model Material {
+  id           String   @id @default(uuid())
+  uploadedById String
+  title        String
+  fileName     String?
+  contentType  String?
+  content      String
+  createdAt    DateTime @default(now())
+
+  quizzes Quiz[]
+}
+
+model Quiz {
+  id          String    @id @default(uuid())
+  materialId  String?
+  material    Material? @relation(fields: [materialId], references: [id])
+  createdById String
+  title       String
+  competency  String?
+  difficulty  String?
+  published   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  questions Question[]
+  attempts  QuizAttempt[]
+}
+
+model Question {
+  id            String  @id @default(uuid())
+  quizId        String
+  quiz          Quiz    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  questionText  String
+  options       Json
+  correctAnswer String
+  explanation   String?
+  difficulty    String?
+  competency    String?
+  bloomsLevel   String?
+}
+
+model QuizAttempt {
+  id          String          @id @default(uuid())
+  quizId      String
+  quiz        Quiz            @relation(fields: [quizId], references: [id])
+  profileId   String
+  profile     EmployeeProfile @relation(fields: [profileId], references: [id])
+  score       Float
+  totalQuestions Int          @default(0)
+  correctAnswers Int          @default(0)
+  answers     Json
+  attemptedAt DateTime        @default(now())
+}
+
+model DiagnosticQuestion {
+  id            String @id @default(uuid())
+  questionText  String
+  options       Json
+  correctAnswer String
+  explanation   String?
+  competency    String
+  difficulty    String @default("Medium")
+  designation   String?
+}
+
+model CompetencyCourseMatch {
+  id             String     @id @default(uuid())
+  competencyId   String
+  courseId       String
+  relevanceScore Int
+  matchedVia     String     // 'exact' | 'semantic'
+  competency     Competency @relation(fields: [competencyId], references: [id], onDelete: Cascade)
+  course         Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt      DateTime   @default(now())
+
+  @@unique([competencyId, courseId])
+}
+
+model NSSTATrainingProgramme {
+  id             String    @id @default(uuid())
+  title          String
+  topic          String?
+  targetAudience String?
+  durationDays   Int?
+  batchSize      Int?
+  venue          String?
+  weekOrDate     String?
+  competencyTags String?   @default("")
+  sourceDocument String?
+  ingestedAt     DateTime  @default(now())
+}
