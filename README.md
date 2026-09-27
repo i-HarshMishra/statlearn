@@ -10,44 +10,6 @@ StatLearnAI is a comprehensive capacity-building platform designed for officials
 
 The system uses a modern web stack (Next.js + Node.js) heavily integrated with the **Google Gemini API** for predictive analytics, personalized summaries, and multimodal document processing.
 
-```mermaid
-graph TD
-    %% Define styles
-    classDef frontend fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff,font-weight:bold
-    classDef backend fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff,font-weight:bold
-    classDef db fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff,font-weight:bold
-    classDef ai fill:#8b5cf6,stroke:#5b21b6,stroke-width:2px,color:#fff,font-weight:bold
-    classDef external fill:#64748b,stroke:#334155,stroke-width:2px,color:#fff,stroke-dasharray: 5 5
-
-    %% Nodes
-    subgraph Client Tier
-        UI["Next.js Frontend\n(React, Dashboard, Analytics UI)"]:::frontend
-    end
-
-    subgraph API Tier
-        API["Node.js / Express Backend\n(REST API, Auth, Business Logic)"]:::backend
-    end
-
-    subgraph Data Tier
-        DB[("SQLite + Prisma ORM\n(Profiles, Competencies, Scores)")]:::db
-    end
-
-    subgraph AI Services (Google)
-        Gemini["Gemini API\n(Forecasts, Summaries, Chat)"]:::ai
-        Vision["Gemini Vision API\n(Certificate Parsing)"]:::ai
-    end
-
-    subgraph External Systems
-        iGOT["iGOT Karmayogi\n(Deep Links for Course Content)"]:::external
-    end
-
-    %% Connections
-    UI -- "HTTP / REST" --> API
-    API -- "Prisma Client" --> DB
-    API -- "Prompts & Context" --> Gemini
-    API -- "Image Buffers" --> Vision
-    UI -. "Redirects (New Tab)" .-> iGOT
-```
 
 ---
 
