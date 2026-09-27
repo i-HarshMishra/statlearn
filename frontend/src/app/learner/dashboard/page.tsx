@@ -197,7 +197,7 @@ export default function LearnerDashboard() {
             <BarChart data={scoreBarData} layout="vertical" margin={{ left: 10 }}>
               <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={90} />
-              <Tooltip formatter={(val: number) => [`${val}/100`, 'Score']} />
+              <Tooltip formatter={(val: any) => [`${val}/100`, 'Score']} />
               <Bar dataKey="score" radius={[0, 6, 6, 0]}>
                 {scoreBarData.map((entry: any, i: number) => (
                   <Cell key={i} fill={entry.score >= 71 ? '#10b981' : entry.score >= 41 ? '#f59e0b' : '#f43f5e'} />

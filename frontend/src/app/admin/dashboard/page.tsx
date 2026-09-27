@@ -213,7 +213,7 @@ export default function AdminDashboard() {
                 <BarChart data={criticalGapsByComp.slice(0, 8)} layout="vertical" margin={{ left: 10 }}>
                   <XAxis type="number" tick={{ fontSize: 11 }} />
                   <YAxis type="category" dataKey="competency" tick={{ fontSize: 10 }} width={100} />
-                  <Tooltip formatter={(v: number) => [v, 'Employees']} />
+                  <Tooltip formatter={(v: any) => [v, 'Employees']} />
                   <Bar dataKey="count" fill="#f43f5e" radius={[0, 6, 6, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -227,7 +227,7 @@ export default function AdminDashboard() {
               <ResponsiveContainer width="100%" height={280}>
                 <PieChart>
                   <Pie data={domainDistribution} cx="50%" cy="50%" innerRadius={60} outerRadius={100}
-                    dataKey="avgScore" nameKey="domain" label={({ domain, avgScore }) => `${domain}: ${avgScore}`}>
+                    dataKey="avgScore" nameKey="domain" label={(entry: any) => `${entry.domain}: ${entry.avgScore}`}>
                     {domainDistribution.map((_: any, i: number) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
