@@ -143,7 +143,7 @@ export default function NSSTAAdminPage() {
                         </div>
                       </td>
                       <td style={{ padding: '1rem', color: 'var(--slate-600)' }}>
-                        {prog.durationDays ? \`\${prog.durationDays} days\` : 'N/A'} 
+                        {prog.durationDays ? `${prog.durationDays} days` : 'N/A'} 
                         <br/>
                         <span style={{ fontSize: '0.8rem' }}>Batch: {prog.batchSize || 'N/A'}</span>
                       </td>
