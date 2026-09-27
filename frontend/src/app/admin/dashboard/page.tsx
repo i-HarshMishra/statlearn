@@ -172,7 +172,7 @@ export default function AdminDashboard() {
                 <BarChart data={designationReadiness} layout="vertical" margin={{ left: 10 }}>
                   <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} />
                   <YAxis type="category" dataKey="designation" tick={{ fontSize: 10 }} width={120} />
-                  <Tooltip formatter={(v: number) => [`${v}%`, 'Avg Readiness']} />
+                  <Tooltip formatter={(v: any) => [`${v}%`, 'Avg Readiness']} />
                   <Bar dataKey="avgReadiness" radius={[0, 6, 6, 0]}>
                     {designationReadiness.map((_: any, i: number) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
@@ -191,7 +191,7 @@ export default function AdminDashboard() {
                 <BarChart data={departmentReadiness} layout="vertical" margin={{ left: 10 }}>
                   <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} />
                   <YAxis type="category" dataKey="department" tick={{ fontSize: 9 }} width={130} />
-                  <Tooltip formatter={(v: number) => [`${v}%`, 'Avg Readiness']} />
+                  <Tooltip formatter={(v: any) => [`${v}%`, 'Avg Readiness']} />
                   <Bar dataKey="avgReadiness" radius={[0, 6, 6, 0]}>
                     {departmentReadiness.map((_: any, i: number) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
